@@ -1,25 +1,41 @@
-let pass = document.getElementById("password");
-let msg = document.getElementById("message");
-let str = document.getElementById("strength");
+const pass = document.getElementById("password");
+const msg = document.getElementById("message");
+const str = document.getElementById("strength");
 
 pass.addEventListener("input", () => {
-  if (pass.value.length > 0) {
-    msg.style.display = "block";
-  } else {
-    msg.style.display = "none";
+  const val = pass.value;
+  msg.style.display = val.length > 0 ? "block" : "none";
+
+  if (val.length === 0) {
+    pass.style.borderColor = "";
+    msg.style.color = "";
+    str.innerHTML = "";
+    return;
   }
 
-  if (pass.value.length < 4) {
-    str.innerHTML = "weak";
-    pass.style.borderColor = "#ff5925";
-    msg.style.color = "#ff5925";
-  } else if (pass.value.length >= 4 && pass.value.length < 8) {
-    str.innerHTML = "medium";
-    pass.style.borderColor = "yellow";
-    msg.style.color = "yellow";
-  } else if (pass.value.length >= 8) {
-    str.innerHTML = "strong";
-    pass.style.borderColor = "green";
-    msg.style.color = "green";
+  // Regex Checks
+  const hasUpper = /[A-Z]/.test(val);
+  const hasNumber = /\d/.test(val);
+  const hasSpecial = /[^A-Za-z0-9]/.test(val);
+
+  let strengthLevel = 0;
+  if (val.length >= 8) strengthLevel++;
+  if (hasUpper) strengthLevel++;
+  if (hasNumber) strengthLevel++;
+  if (hasSpecial) strengthLevel++;
+
+  // Strength logic
+  if (strengthLevel <= 1) {
+    str.innerHTML = "Weak";
+    pass.style.borderColor = "#ff4d4d";
+    msg.style.color = "#ff4d4d";
+  } else if (strengthLevel === 2 || strengthLevel === 3) {
+    str.innerHTML = "Medium";
+    pass.style.borderColor = "#ffc107";
+    msg.style.color = "#ffc107";
+  } else {
+    str.innerHTML = "Strong";
+    pass.style.borderColor = "#28a745";
+    msg.style.color = "#28a745";
   }
 });
